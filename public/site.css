@@ -1,0 +1,10 @@
+body {
+    margin: 10px;
+}
+td.selected {
+    background-color: #ccc;
+}
+
+table.menu td {
+    padding: 5px;
+}
