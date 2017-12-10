@@ -6,7 +6,7 @@
 <div style="width: 96%">
     <div style="float:left; margin-right: 20px;">
         <h2>Totals</h2>
-<table class="pure-table">
+<table class="table table-striped">
     <thead>
     <tr>
         <th>Pos</th>
@@ -35,7 +35,7 @@
 
 <div style="float: left;">
 <h2>Fastest times</h2>
-<table class="pure-table">
+<table class="table table-striped">
     <thead>
     <tr>
         <th>Pos</th>

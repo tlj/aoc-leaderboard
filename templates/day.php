@@ -3,7 +3,7 @@
     <body>
         <h1>Day <?= $reqDay ?></h1>
         <?php include __DIR__ . '/_menu.php'; ?>
-        <table class="pure-table">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Name</th>
