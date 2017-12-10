@@ -120,12 +120,17 @@ class LeaderBoardData
                 if (!isset($totals[$dayMemberId])) {
                     $totals[$dayMemberId] = [
                         'name' => $dayMemberData['name'],
+                        'part1Total' => 0,
+                        'part1Avg' => 0,
+                        'part2Total' => 0,
+                        'part2Avg' => 0,
                         'part2DiffTotal' => 0,
                         'part2DiffCount' => 0,
                         'part2DiffAvg' => 0,
                         'penalty' => 0
                     ];
                 }
+
                 //if ($dayMemberData['part2Diff'] > 7200) continue;
                 if ($dayMemberData['part2Diff'] > 7200) {
                     $dayMemberData['part2Diff'] = 7200;
@@ -133,13 +138,40 @@ class LeaderBoardData
                 }
                 $totals[$dayMemberId]['part2DiffTotal'] += $dayMemberData['part2Diff'] ?? 0;
                 $totals[$dayMemberId]['part2DiffCount'] += $dayMemberData['part2'] ? 1 : 0;
+                $totals[$dayMemberId]['part1Total'] += $dayMemberData['part1'] ?? 0;
+                $totals[$dayMemberId]['part2Total'] += $dayMemberData['part2'] ?? 0;
+
                 if ($totals[$dayMemberId]['part2DiffCount'] > 0) {
                     $totals[$dayMemberId]['part2DiffAvg'] = floor($totals[$dayMemberId]['part2DiffTotal'] / $totals[$dayMemberId]['part2DiffCount']);
+                    $totals[$dayMemberId]['part1Avg'] = floor($totals[$dayMemberId]['part1Total'] / $totals[$dayMemberId]['part2DiffCount']);
+                    $totals[$dayMemberId]['part2Avg'] = floor($totals[$dayMemberId]['part2Total'] / $totals[$dayMemberId]['part2DiffCount']);
                 }
             }
         }
 
         return $totals;
+    }
+
+    /**
+     *
+     */
+    public function getTopLists()
+    {
+        $top = [];
+
+        foreach ($this->getDays() as $day => $dayMembers) {
+            foreach ($dayMembers as $dayMemberId => $dayMemberData) {
+                $top[] = [
+                    'day' => $day,
+                    'name' => $dayMemberData['name'],
+                    'part2Diff' => $dayMemberData['part2Diff'],
+                    'part1' => $dayMemberData['part1'],
+                    'part2' => $dayMemberData['part2']
+                ];
+            }
+        }
+
+        return $top;
     }
 
     /**

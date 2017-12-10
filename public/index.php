@@ -29,9 +29,18 @@ if (isset($_REQUEST['day']) && is_numeric($_REQUEST['day'])) {
 }
 
 $totals = $leaderBoard->getTotals();
-usort($totals, function($a, $b) {
-    $aVal = $a['part2DiffAvg'] ?? PHP_INT_MAX;
-    $bVal = $b['part2DiffAvg'] ?? PHP_INT_MAX;
+$sortOrder = $_REQUEST['totOrder'] ?? "part2DiffAvg";
+usort($totals, function($a, $b) use ($sortOrder) {
+    $aVal = $a[$sortOrder] ?? PHP_INT_MAX;
+    $bVal = $b[$sortOrder] ?? PHP_INT_MAX;
+    return $aVal <=> $bVal;
+});
+
+$tops = $leaderBoard->getTopLists();
+$sortOrder = $_REQUEST['topOrder'] ?? "part2Diff";
+usort($tops, function($a, $b) use ($sortOrder) {
+    $aVal = $a[$sortOrder] ?? PHP_INT_MAX;
+    $bVal = $b[$sortOrder] ?? PHP_INT_MAX;
     return $aVal <=> $bVal;
 });
 
