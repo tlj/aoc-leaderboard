@@ -87,10 +87,10 @@ class LeaderBoardData
                     'part2Diff' => null,
                 ];
                 if (isset($dayData[1])) {
-                    $md['part1'] = (new DateTime($dayData[1]['get_star_ts']))->getTimestamp() - $dayStart;
+                    $md['part1'] = (new DateTime('@' . $dayData[1]['get_star_ts']))->getTimestamp() - $dayStart;
                 }
                 if (isset($dayData[2])) {
-                    $md['part2'] = (new DateTime($dayData[2]['get_star_ts']))->getTimestamp() - $dayStart;
+                    $md['part2'] = (new DateTime('@' . $dayData[2]['get_star_ts']))->getTimestamp() - $dayStart;
                     $md['part2Diff'] = $md['part2'] - $md['part1'];
                 }
 
