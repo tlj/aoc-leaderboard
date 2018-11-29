@@ -5,7 +5,7 @@ require __DIR__ . '/../lib/LeaderBoardData.php';
 $leaderBoardId = (int)$_REQUEST['id'];
 $year = (int)$_REQUEST['year'];
 
-if ($year < 2015 || $year > 2017) die('Invalid year.');
+if ($year < 2015 || $year > 2018) die('Invalid year.');
 if (!$leaderBoardId) die('Leaderboardid required.');
 
 $leaderBoard = new LeaderBoardData($leaderBoardId, $year);
