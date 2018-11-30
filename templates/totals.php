@@ -1,12 +1,11 @@
 <html>
 <?php include __DIR__ . '/_header.php'; ?>
 <body>
-<h1>Totals (max day <?php echo $leaderBoard->maxDay ?>)</h1>
-<?php include __DIR__ . '/_menu.php'; ?>
+
 <div style="width: 96%">
     <div style="float:left; margin-right: 20px;">
         <h2>Totals</h2>
-<table class="table table-striped">
+<table class="table table-striped table-sm">
     <thead>
     <tr>
         <th>Pos</th>
@@ -35,7 +34,7 @@
 
 <div style="float: left;">
 <h2>Fastest times</h2>
-<table class="table table-striped">
+<table class="table table-striped table-sm">
     <thead>
     <tr>
         <th>Pos</th>
