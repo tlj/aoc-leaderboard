@@ -22,7 +22,7 @@
     <?php if ($total['part2DiffCount'] < $leaderBoard->maxDay) continue; ?>
         <tr>
             <td><?php echo $pos++; ?></td>
-            <td><?php echo $total['name'] ?></td>
+            <td nowrap><?php echo $total['name'] ?></td>
             <td style="text-align:right"><?php echo LeaderBoardData::readableTimestamp($total['part1Avg']) ?></td>
             <td style="text-align:right"><?php echo LeaderBoardData::readableTimestamp($total['part2Avg']) ?></td>
             <td style="text-align:right"><?php echo LeaderBoardData::readableTimestamp($total['part2DiffAvg']) ?></td>
@@ -51,7 +51,7 @@
             <tr>
                 <td><?php echo $pos++; ?></td>
                 <td><?php echo $top['day']; ?></td>
-                <td><?php echo $top['name']; ?></td>
+                <td nowrap><?php echo $top['name']; ?></td>
                 <td style="text-align: right;"><?php echo LeaderBoardData::readableTimestamp($top['part1']); ?></td>
                 <td style="text-align: right;"><?php echo LeaderBoardData::readableTimestamp($top['part2']); ?></td>
                 <td style="text-align: right;"><?php echo LeaderBoardData::readableTimestamp($top['part2Diff']); ?></td>
