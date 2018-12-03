@@ -7,6 +7,8 @@ class LeaderBoardData
     /** @var int */
     public $maxDay = 0;
 
+    public $limit = 10;
+
     /** @var int */
     public $leaderBoardId;
     /** @var int */
@@ -169,6 +171,26 @@ class LeaderBoardData
                     'part2' => $dayMemberData['part2']
                 ];
             }
+        }
+
+        return $top;
+    }
+
+    public function getTopToday()
+    {
+        $top = [];
+
+        $dayNumber = date('j');
+        $dayMembers = $this->getDays()[$dayNumber];
+
+        foreach ($dayMembers as $dayMemberId => $dayMemberData) {
+            $top[] = [
+                'day' => $day,
+                'name' => $dayMemberData['name'],
+                'part2Diff' => $dayMemberData['part2Diff'],
+                'part1' => $dayMemberData['part1'],
+                'part2' => $dayMemberData['part2']
+            ];
         }
 
         return $top;
