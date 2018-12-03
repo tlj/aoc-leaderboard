@@ -1,8 +1,8 @@
 <html>
 <?php include __DIR__ . '/_header.php'; ?>
 <body>
-<h1>Totals (max day <?php echo $leaderBoard->maxDay ?>)</h1>
-<?php include __DIR__ . '/_menu.php'; ?>
+<!-- <h1>Totals (max day <?php echo $leaderBoard->maxDay ?>)</h1> -->
+<!-- <?php include __DIR__ . '/_menu.php'; ?> -->
 <div style="width: 96%">
     <div style="float:left; margin-right: 20px;">
         <h2>Totals</h2>
