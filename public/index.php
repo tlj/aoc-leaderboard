@@ -52,4 +52,8 @@ usort($topsToday, function($a, $b) use ($sortOrder) {
     return $aVal <=> $bVal;
 });
 
-include __DIR__ . '/../templates/totals.php';
+if (isset($_REQUEST['embed']) && $_REQUEST['embed'] == 1) {
+    include __DIR__ . '/../templates/embed.php';
+} else {
+    include __DIR__ . '/../templates/totals.php';
+}
