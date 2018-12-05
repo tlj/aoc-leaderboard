@@ -14,6 +14,8 @@
         <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&totOrder=part1Avg">Part1 Avg</a></th>
         <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&totOrder=part2Avg">Part2 Avg</a></th>
         <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&totOrder=part2DiffAvg">Part2Diff</a></th>
+        <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&totOrder=calculatedDiffAvg">wAvg</a></th>
+        <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&totOrder=score">Score</a></th>
     </tr>
     </thead>
     <tbody>
@@ -27,6 +29,8 @@
             <td style="text-align:right"><?php echo LeaderBoardData::readableTimestamp($total['part1Avg']) ?></td>
             <td style="text-align:right"><?php echo LeaderBoardData::readableTimestamp($total['part2Avg']) ?></td>
             <td style="text-align:right"><?php echo LeaderBoardData::readableTimestamp($total['part2DiffAvg']) ?></td>
+            <td style="text-align:right"><?php echo LeaderBoardData::readableTimestamp($total['calculatedDiffAvg']) ?></td>
+            <td style="text-align:right"><?php echo $total['score'] ?></td>
         </tr>
     <?php } ?>
     <tbody>
@@ -44,6 +48,7 @@
         <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&topOrder=part1">Part1</a></th>
         <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&topOrder=part2">Part2</a></th>
         <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&topOrder=part2Diff">Part2Diff</a></th>
+        <th style="text-align:right"><a href="/?id=<?=$leaderBoardId?>&year=<?=$year?>&topOrder=calculatedDiff">wTime</a></th>
     </tr>
     </thead>
     <tbody>
@@ -56,6 +61,7 @@
                 <td style="text-align: right;"><?php echo LeaderBoardData::readableTimestamp($top['part1']); ?></td>
                 <td style="text-align: right;"><?php echo LeaderBoardData::readableTimestamp($top['part2']); ?></td>
                 <td style="text-align: right;"><?php echo LeaderBoardData::readableTimestamp($top['part2Diff']); ?></td>
+                <td style="text-align: right;"><?php echo LeaderBoardData::readableTimestamp($top['calculatedDiff']); ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>

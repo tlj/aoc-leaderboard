@@ -15,6 +15,9 @@ class LeaderBoardData
     /** @var string */
     private $session;
 
+    /** @var int  */
+    private $maxPenalty = 180;
+
     /**
      * @param int $year
      * @return array
@@ -71,9 +74,11 @@ class LeaderBoardData
     {
         $days = [];
 
+        $fastestMemberIds = [];
+
         foreach ($this->json['members'] as $memberId => $member) {
             foreach ($member['completion_day_level'] as $day => $dayData) {
-                $dayStart = (new DateTime("{$this->json['event']}-12-{$day} 05:00:00", new DateTimeZone('UTC')))->getTimestamp();
+                $dayStart = (new \DateTime("{$this->json['event']}-12-{$day} 05:00:00", new DateTimeZone('UTC')))->getTimestamp();
                 if ($day > $this->maxDay) $this->maxDay = $day;
                 if (!isset($days[$day])) {
                     $days[$day] = [];
@@ -81,22 +86,72 @@ class LeaderBoardData
 
                 $md = [
                     'name' => $member['name'] ?? $memberId,
+                    'memberId' => $memberId,
                     'day' => $day,
                     'part1' => null,
                     'part2' => null,
                     'part2Diff' => null,
+                    'score' => null,
+                    'diffPenalty' => null,
+                    'calculatedDiff' => PHP_INT_MAX,
                 ];
                 if (isset($dayData[1])) {
-                    $md['part1'] = (new DateTime('@' . $dayData[1]['get_star_ts']))->getTimestamp() - $dayStart;
+                    $md['part1'] = (new \DateTime('@' . $dayData[1]['get_star_ts']))->getTimestamp() - $dayStart;
                 }
                 if (isset($dayData[2])) {
-                    $md['part2'] = (new DateTime('@' . $dayData[2]['get_star_ts']))->getTimestamp() - $dayStart;
+                    $md['part2'] = (new \DateTime('@' . $dayData[2]['get_star_ts']))->getTimestamp() - $dayStart;
                     $md['part2Diff'] = $md['part2'] - $md['part1'];
                 }
 
                 $days[$day][$memberId] = $md;
+
+                if (!isset($fastestMemberIds[$day]) ||
+                    $days[$day][$memberId]['part1'] < $days[$day][$fastestMemberIds[$day]]['part1']) {
+                    $fastestMemberIds[$day] = $memberId;
+                }
             }
         }
+
+        foreach ($days as $day => $dayData) {
+            foreach ($dayData as $memberId => $memberData) {
+                if (!isset($fastestMemberIds[$day])) {
+                    continue;
+                }
+                if (!$memberData['part2']) {
+                    $days[$day][$memberId]['calculatedDiff'] = PHP_INT_MAX;
+                    continue;
+                }
+                $penaltyTreshold = $dayData[$fastestMemberIds[$day]]['part1'] * 1.25;
+                $penalty = 0;
+                $maxPenalty = $dayData[$fastestMemberIds[$day]]['part2Diff'] * 3;
+
+                if ($memberData['part1'] > $penaltyTreshold) {
+                    $startDiff = $memberData['part1'] - $penaltyTreshold;
+                    $penalty = 60 + ($startDiff / 10);
+                }
+
+                if ($penalty > $maxPenalty) {
+                    $penalty = $maxPenalty;
+                }
+                $days[$day][$memberId]['diffPenalty'] = $penalty;
+                $days[$day][$memberId]['calculatedDiff'] = $memberData['part2Diff'] + $penalty;
+            }
+        }
+
+        foreach ($days as $day => $dayData) {
+            usort($dayData, function($a, $b) {
+                return $a['calculatedDiff'] <=> $b['calculatedDiff'];
+            });
+            $score = count($dayData);
+            $newDayData = [];
+            foreach ($dayData as $dayDatum) {
+                $dayDatum['score'] = $score--;
+                $newDayData[] = $dayDatum;
+            }
+
+            $days[$day] = $newDayData;
+        }
+
         return $days;
     }
 
@@ -116,7 +171,8 @@ class LeaderBoardData
     {
         $totals = [];
         foreach ($this->getDays() as $day => $dayMembers) {
-            foreach ($dayMembers as $dayMemberId => $dayMemberData) {
+            foreach ($dayMembers as $dayMemberData) {
+                $dayMemberId = $dayMemberData['memberId'];
                 if (!isset($totals[$dayMemberId])) {
                     $totals[$dayMemberId] = [
                         'name' => $dayMemberData['name'],
@@ -127,7 +183,10 @@ class LeaderBoardData
                         'part2DiffTotal' => 0,
                         'part2DiffCount' => 0,
                         'part2DiffAvg' => 0,
-                        'penalty' => 0
+                        'penalty' => 0,
+                        'calculatedDiffAvg' => 0,
+                        'calculatedDiffTotal' => 0,
+                        'score' => 0,
                     ];
                 }
 
@@ -137,14 +196,17 @@ class LeaderBoardData
                     $totals[$dayMemberId]['penalty']++;
                 }
                 $totals[$dayMemberId]['part2DiffTotal'] += $dayMemberData['part2Diff'] ?? 0;
+                $totals[$dayMemberId]['calculatedDiffTotal'] += $dayMemberData['calculatedDiff'] ?? 0;
                 $totals[$dayMemberId]['part2DiffCount'] += $dayMemberData['part2'] ? 1 : 0;
                 $totals[$dayMemberId]['part1Total'] += $dayMemberData['part1'] ?? 0;
                 $totals[$dayMemberId]['part2Total'] += $dayMemberData['part2'] ?? 0;
+                $totals[$dayMemberId]['score'] += $dayMemberData['score'] ?? 0;
 
                 if ($totals[$dayMemberId]['part2DiffCount'] > 0) {
                     $totals[$dayMemberId]['part2DiffAvg'] = floor($totals[$dayMemberId]['part2DiffTotal'] / $totals[$dayMemberId]['part2DiffCount']);
                     $totals[$dayMemberId]['part1Avg'] = floor($totals[$dayMemberId]['part1Total'] / $totals[$dayMemberId]['part2DiffCount']);
                     $totals[$dayMemberId]['part2Avg'] = floor($totals[$dayMemberId]['part2Total'] / $totals[$dayMemberId]['part2DiffCount']);
+                    $totals[$dayMemberId]['calculatedDiffAvg'] = floor($totals[$dayMemberId]['calculatedDiffTotal'] / $totals[$dayMemberId]['part2DiffCount']);
                 }
             }
         }
@@ -166,7 +228,8 @@ class LeaderBoardData
                     'name' => $dayMemberData['name'],
                     'part2Diff' => $dayMemberData['part2Diff'],
                     'part1' => $dayMemberData['part1'],
-                    'part2' => $dayMemberData['part2']
+                    'part2' => $dayMemberData['part2'],
+                    'calculatedDiff' => $dayMemberData['calculatedDiff']
                 ];
             }
         }
