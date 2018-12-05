@@ -7,6 +7,8 @@ class LeaderBoardData
     /** @var int */
     public $maxDay = 0;
 
+    public $limit = 10;
+
     /** @var int */
     public $leaderBoardId;
     /** @var int */
@@ -235,6 +237,18 @@ class LeaderBoardData
         }
 
         return $top;
+    }
+
+    public function getTopToday()
+    {
+        $dayNumber = date('j');
+        $dayMembers = $this->getDays()[$dayNumber];
+
+        usort($dayMembers, function($a, $b) {
+            return $a['score'] <=> $b['score'];
+        });
+
+        return $dayMembers;
     }
 
     /**
