@@ -44,4 +44,16 @@ usort($tops, function($a, $b) use ($sortOrder) {
     return $aVal <=> $bVal;
 });
 
-include __DIR__ . '/../templates/totals.php';
+$topsToday = $leaderBoard->getTopToday();
+$sortOrder = $_REQUEST['topOrder'] ?? "part2Diff";
+usort($topsToday, function($a, $b) use ($sortOrder) {
+    $aVal = $a[$sortOrder] ?? PHP_INT_MAX;
+    $bVal = $b[$sortOrder] ?? PHP_INT_MAX;
+    return $aVal <=> $bVal;
+});
+
+if (isset($_REQUEST['embed']) && $_REQUEST['embed'] == 1) {
+    include __DIR__ . '/../templates/embed.php';
+} else {
+    include __DIR__ . '/../templates/totals.php';
+}
