@@ -1,3 +1,5 @@
+### DEPRECATED, PLEASE GO TO https://github.com/tlj/aoc-leaderboard-go
+
 Advent of Code Leaderboard Day-by-day
 =====================================
 
